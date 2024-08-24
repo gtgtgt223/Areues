@@ -1,54 +1,40 @@
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Player = game.Players.LocalPlayer
-local Window = OrionLib:MakeWindow({Name = "Key system", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+local Window = Rayfield:CreateWindow({
+    Name = "Rayfield Example Window",
+    LoadingTitle = "Rayfield Interface Suite",
+    LoadingSubtitle = "by Sirius",
+    ConfigurationSaving = {
+       Enabled = true,
+       FolderName = nil, -- Create a custom folder for your hub/game
+       FileName = "Big Hub"
+    },
+    Discord = {
+       Enabled = false,
+       Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+    },
+    KeySystem = true, -- Set this to true to use our key system
+    KeySettings = {
+       Title = "Untitled",
+       Subtitle = "Key System",
+       Note = "To get a license key to aureues.cc please add 2mceb on discord I will also do free keys for a month",
+       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+       SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+       GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+       Key = {"zX7p9mV2c3YkQ", "Owneraccesskey"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+    }
+ })
 
-OrionLib:MakeNotification({
-	Name = "Logged in!",
-	Content = "You are logged in as "..Player.Name..".",
-	Image = "rbxassetid://4483345998",
-	Time = 5
-})
+ local MainTab = Window:CreateTab("Main", 4483362458) -- Title, Image
 
-_G.Key = "zX7p9mV2c3YkQ"
-_G.KeyInput = "string"
+ local VisualsTab = Window:CreateTab("Visuals", 4483362458) -- Title, Image
 
-function MakeScriptHub()
-    local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+ local PlayerTab = Window:CreateTab("Player", 4483362458) -- Title, Image
 
-local Window = OrionLib:MakeWindow({Name = "Areues.cc", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
-
-
-OrionLib:MakeNotification({
-	Name = "Loaded!",
-	Content = "Loaded!",
-	Image = "rbxassetid://4483345998",
-	Time = 5
-})
-
-local MainTab = Window:MakeTab({
-	Name = "Main",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-local PlayerTab = Window:MakeTab({
-	Name = "Player",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-local VisualsTab = Window:MakeTab({
-	Name = "Visuals",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-
-
-VisualsTab:AddButton({
-	Name = "ESP",
-	Callback = function()
+ local Button = VisualsTab:CreateButton({
+    Name = "Highlight ESP",
+    Callback = function()
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
         
@@ -78,29 +64,12 @@ VisualsTab:AddButton({
                 highlight.Parent = character
             end)
         end)
-        
-        
-  	end    
-})
+    end,
+ })
 
-
-
-PlayerTab:AddSlider({
-	Name = "Walkspeed Slider",
-	Min = 3,
-	Max = 2000,
-	Default = 16,
-	Color = Color3.fromRGB(255,255,255),
-	Increment = 1,
-	ValueName = "Speed",
-	Callback = function(Value)
-		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = (Value)
-	end    
-})
-
-MainTab:AddButton({
-	Name = "Aimbot",
-	Callback = function()
+ local Button = MainTab:CreateButton({
+    Name = "Aimbot",
+    Callback = function()
         local Players = game:GetService("Players")
         local UserInputService = game:GetService("UserInputService")
         local LocalPlayer = Players.LocalPlayer
@@ -148,12 +117,39 @@ MainTab:AddButton({
         end)
         
         
-  	end    
-})
+    end,
+ })
 
-PlayerTab:AddButton({
-	Name = "Noclip",
-	Callback = function()
+ local Button = PlayerTab:CreateButton({
+    Name = "Gravity",
+    Callback = function()
+        workspace.Gravity = 100
+    end,
+ })
+
+ local Button = PlayerTab:CreateButton({
+    Name = "JumpPower",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = 150
+    end,
+ })
+
+ local Slider = PlayerTab:CreateSlider({
+    Name = "Walkspeed Slider",
+    Range = {3, 100},
+    Increment = 10,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = (Value)
+    -- The variable (Value) is a number which correlates to the value the slider is currently at
+    end,
+ })
+
+ local Button = PlayerTab:CreateButton({
+    Name = "Noclip",
+    Callback = function()
         local player = game.Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
         local noclip = false
@@ -184,34 +180,12 @@ PlayerTab:AddButton({
         end
         
         game:GetService("UserInputService").InputBegan:Connect(onInputBegan)
-        
-        
-  	end    
-})
+    end,
+ })
 
-PlayerTab:AddButton({
-	Name = "Gravity",
-	Callback = function()
-      		workspace.Gravity = 100
-  	end    
-})
-
-
-MainTab:AddButton({
-	Name = "Infinite jump",
-	Callback = function()
-        local InfiniteJumpEnabled = true
-        game:GetService("UserInputService").JumpRequest:connect(function()
-        if InfiniteJumpEnabled then
-        game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
-        end
-        end)
-  	end    
-})
-
-VisualsTab:AddButton({
-	Name = "Tracers",
-	Callback = function()
+ local Button = VisualsTab:CreateButton({
+    Name = "Tracers",
+    Callback = function()
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
         local Mouse = LocalPlayer:GetMouse()
@@ -276,18 +250,29 @@ VisualsTab:AddButton({
         
         game:GetService("RunService").RenderStepped:Connect(updateTracers)
         
-  	end    
-})
+    end,
+ })
 
+ local Button = PlayerTab:CreateButton({
+    Name = "Infinite jump",
+    Callback = function()
+        local InfiniteJumpEnabled = true
+        game:GetService("UserInputService").JumpRequest:connect(function()
+        if InfiniteJumpEnabled then
+        game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+        end
+        end)
+    end,
+ })
 
-MainTab:AddButton({
-	Name = "Spinbot",
-	Callback = function()
+ local Button = PlayerTab:CreateButton({
+    Name = "Spinbot",
+    Callback = function()
         local player = game.Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
         
         local runService = game:GetService("RunService")
-        local spinSpeed = 5
+        local spinSpeed = 50
         
         runService.RenderStepped:Connect(function(deltaTime)
             if character and character:FindFirstChild("HumanoidRootPart") then
@@ -295,31 +280,5 @@ MainTab:AddButton({
                 rootPart.CFrame = rootPart.CFrame * CFrame.Angles(0, math.rad(spinSpeed), 0)
             end
         end)
-        
-  	end    
-})
-end
-
-local Tab = Window:MakeTab({
-	Name = "Key",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-Tab:AddTextbox({
-	Name = "Enter key",
-	Default = "",
-	TextDisappear = true,
-	Callback = function(Value)
-		_G.KeyInput = Value
-	end	  
-})
-
-Tab:AddButton({
-	Name = "Check Key",
-	Callback = function()
-      	if _G.KeyInput == _G.Key then
-        MakeScriptHub()
-        end
-  	end    
-})
+    end,
+ })
